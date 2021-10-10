@@ -22,7 +22,6 @@ public class TestCase {
 	void addNewTestCaseErrorMessages () throws InterruptedException
 	{
 		this.driver.findElement(By.className("navigate-buttons")).click();
-		Thread.sleep(1000);
 		String url = this.driver.getCurrentUrl();
 		String expectedURL = "https://qa-sandbox.ni.htec.rs/new-testcase";
 		if (url.equals(expectedURL))
@@ -44,9 +43,7 @@ public class TestCase {
 	void createValidTestCase (String name, String expectedResult, String testStep, int numberOfSteps) throws InterruptedException
 	{
 		
-		Thread.sleep(1000);
 		driver.findElement (By.xpath ("//*[contains(text(),'New Test Case')]")).click();
-		Thread.sleep(1000);
 		this.driver.findElement (By.name("title")).sendKeys(name);
 		this.driver.findElement (By.name("expected_result")).sendKeys(expectedResult);
 		this.driver.findElement (By.name("step-0")).sendKeys(testStep);
@@ -55,8 +52,60 @@ public class TestCase {
 			this.driver.findElement(By.className("full-width-btn--label")).click();
 			this.driver.findElement(By.name("step-" + i)).sendKeys("Test step " + i);
 		}
-		driver.findElement (By.xpath ("//*[contains(text(),'Submit')]")).click();
+		this.driver.findElement (By.xpath ("//*[contains(text(),'Submit')]")).click();
 	}
 	
+	void editTitle(int i) throws InterruptedException
+	{
+		String searcTearm = "//*[contains(text(),'Test-"+i+"')]";
+		WebElement element =this.driver.findElement (By.xpath (searcTearm));
+		element.click();
+		String url = this.driver.getCurrentUrl();
+		String[] parts = url.split("/");
+		String id = parts[parts.length-1];
+		Thread.sleep(1000);
+		this.driver.findElement (By.name("title")).clear();
+		String type;
+		if(Integer.parseInt(id)%2==0)
+		{
+			type = "Even";
+		}
+		else
+		{
+			type = "odd";
+		}
+		this.driver.findElement (By.name("title")).sendKeys("The "+ id + " of this use case is "+ type);
+		this.driver.findElement(By.className("form-element--textarea")).click();
+		this.driver.findElement(By.className("form-element--textarea")).clear();
+		this.driver.findElement(By.className("form-element--textarea")).sendKeys("This Description belongs to " + id + " which is "+ type);
+		this.driver.findElement (By.name("expected_result")).clear();
+		this.driver.findElement (By.name("expected_result")).sendKeys("This Expected Result belongs to " + id + " which is "+ type);
+		List<WebElement> steps;
+		steps = this.driver.findElements(By.xpath("//*[contains(@name, 'step-')]"));
+		for(int j=0;j<steps.size();j++) {
+			steps.get(j).clear();
+			steps.get(j).sendKeys("This Step-"+j+" belongs to " + id + " which is "+ type);
+		}
+		this.driver.findElement(By.className("react-switch-bg")).click();
+		WebElement button = this.driver.findElement(By.xpath ("//*[contains(text(),'Submit')]"));
+		button.click();
+		driver.navigate().to("https://qa-sandbox.ni.htec.rs/testcases");
+
+	}
 	
+	void deleteCases() throws InterruptedException
+	{
+		Thread.sleep(1000);
+		int size = this.driver.findElements(By.className("preview-card-body")).size();
+		for(int i=0;i<size;i++) 
+		{
+			WebElement element = this.driver.findElement(By.className("preview-card"));
+			element.click();
+			this.driver.findElement(By.xpath("//*[contains(@class,'danger')]")).click();
+			WebElement button = this.driver.findElement(By.className("confirmation-dialog--buttons--confirm"));
+			button.click();
+			driver.navigate().to("https://qa-sandbox.ni.htec.rs/testcases");
+		}
+	}
 }
+

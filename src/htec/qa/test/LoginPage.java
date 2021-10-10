@@ -28,7 +28,6 @@ public class LoginPage {
 		}
 		
 		String invalidPassword = this.driver.findElements(By.id("validation-msg")).get(1).getText();
-		System.out.println(invalidPassword);
 		String expectedInvalidPasswordMessage = "Password is required";
 		if (invalidPassword.equals(expectedInvalidPasswordMessage))
 		{
@@ -59,10 +58,9 @@ public class LoginPage {
 			System.out.println("Invalid input message is not shown");
 		}
 		this.driver.findElement(By.name("email")).clear();
-		Thread.sleep(3000);
 		this.driver.findElement(By.name("password")).click();
 		this.driver.findElement(By.name("password")).clear();
-		Thread.sleep(3000);
+		Thread.sleep(1000);
 
 
 	}
@@ -71,10 +69,9 @@ public class LoginPage {
 		this.driver.findElement(By.name("email")).sendKeys(email);
 		this.driver.findElement(By.name("password")).sendKeys(correctPassword);
 		this.driver.findElement(By.className("full-width-btn")).click();
-		Thread.sleep(3000);
+		Thread.sleep(1000);
 		String url = this.driver.getCurrentUrl();
 		String expectedUrl = "https://qa-sandbox.ni.htec.rs/dashboard";
-		System.out.println(url);
 		if (url.equals(expectedUrl))
 		{
 			System.out.println("Login worikng.");
